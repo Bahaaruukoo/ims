@@ -1,0 +1,37 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+<h2 class="mb-3">Project Memberships</h2>
+
+<a href="{% url 'membership_create' %}" class="btn btn-primary mb-3">Assign Member</a>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Project</th>
+            <th>Member</th>
+            <th>Site</th>
+            <th>Warehouse</th>
+            <th width="150">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for m in memberships %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ m.project }}</td>
+            <td>{{ m.member }}</td>
+            <td>{{ m.site|default:"—" }}</td>
+            <td>{{ m.location|default:"—" }}</td>
+            <td>
+                <a href="{% url 'membership_update' m.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'membership_delete' m.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

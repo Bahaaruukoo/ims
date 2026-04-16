@@ -1,0 +1,31 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+<h2 class="mb-3">Item Variants</h2>
+
+<a href="{% url 'variant_create' %}" class="btn btn-primary mb-3">Add Variant</a>
+
+<ul class="list-group">
+    {% for v in variants %}
+        <li class="list-group-item d-flex justify-content-between row">
+              <!-- Number column -->
+            <div style="width: 50px;">
+                <span class="badge bg-secondary">{{ forloop.counter }}</span>
+            </div>
+
+            <div class="col-md-4">
+                <strong>{{ v.item.name }} </strong>
+            </div>
+            <div class="col-md-3" >
+                <strong>{{ v.name }}</strong>
+                <span class="badge bg-info">SKU: {{ v.sku }}</span>
+            </div>
+
+            <div class="col-md-4 text-end">
+                <a href="{% url 'variant_update' v.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'variant_delete' v.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

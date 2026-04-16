@@ -1,0 +1,57 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+<h2>
+    {% if edit %} Edit {% else %} Create {% endif %}
+    Transaction
+</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        {{ form.item_variant.label_tag }} {{ form.item_variant }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.type.label_tag }} {{ form.type }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.quantity.label_tag }} {{ form.quantity }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.rate.label_tag }} {{ form.rate }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.from_location.label_tag }} {{ form.from_location }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.to_location.label_tag }} {{ form.to_location }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.project.label_tag }} {{ form.project }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.stage.label_tag }} {{ form.stage }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.site.label_tag }} {{ form.site }}
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+
+{% if form.errors %}
+<div class="alert alert-danger mt-3">
+    {{ form.errors }}
+</div>
+{% endif %}
+
+{% endblock %}

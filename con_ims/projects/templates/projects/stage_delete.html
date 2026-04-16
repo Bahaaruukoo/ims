@@ -1,0 +1,19 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+<h2>Delete Stage</h2>
+
+<p>Are you sure you want to delete the stage <strong>{{ stage.name }}</strong>?</p>
+
+<ul>
+    <li><strong>Project:</strong> {{ stage.project.name }}</li>
+    <li><strong>Site:</strong> {{ stage.site.name if stage.site else "—" }}</li>
+    <li><strong>Order:</strong> {{ stage.order }}</li>
+</ul>
+
+<form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger">Delete</button>
+    <a href="{% url 'stage_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

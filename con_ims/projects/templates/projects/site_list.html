@@ -1,0 +1,35 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+<h2 class="mb-3">Sites</h2>
+
+<a href="{% url 'site_create' %}" class="btn btn-primary mb-3">Add Site</a>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Project</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th width="150">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in sites %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ s.project.name }}</td>
+            <td>{{ s.name }}</td>
+            <td>{{ s.description|default:"—" }}</td>
+            <td>
+                <a href="{% url 'site_update' s.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'site_delete' s.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

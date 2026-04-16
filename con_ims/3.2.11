@@ -1,0 +1,7 @@
+Collecting psycopg
+  Downloading psycopg-3.3.3-py3-none-any.whl.metadata (4.3 kB)
+Requirement already satisfied: typing-extensions>=4.6 in C:\Users\X260\OneDrive\Documents\Construction IMS\venv\Lib\site-packages (from psycopg) (4.15.0)
+Requirement already satisfied: tzdata in C:\Users\X260\OneDrive\Documents\Construction IMS\venv\Lib\site-packages (from psycopg) (2025.3)
+Downloading psycopg-3.3.3-py3-none-any.whl (212 kB)
+Installing collected packages: psycopg
+Successfully installed psycopg-3.3.3

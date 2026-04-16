@@ -1,0 +1,18 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+<h2>Delete Site</h2>
+
+<p>Are you sure you want to delete the site <strong>{{ site.name }}</strong>?</p>
+
+<ul>
+    <li><strong>Project:</strong> {{ site.project.name }}</li>
+    <li><strong>Description:</strong> {{ site.description|default:"—" }}</li>
+</ul>
+
+<form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger">Delete</button>
+    <a href="{% url 'site_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

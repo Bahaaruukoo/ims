@@ -1,0 +1,53 @@
+<style>
+.popup-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-align: center;
+}
+button.btn-success {
+    width: 50%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+form p {
+    margin-bottom: 10px;
+}
+</style>
+
+<div class="popup-title">Add Item</div>
+
+<form method="post" id="itemCreateForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+
+<script>
+document.getElementById("itemCreateForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch(window.location.href, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+
+            // Close modal
+            window.parent.closeItemModal();
+
+            // Update parent dropdown
+            if (window.parent.refreshItemDropdown) {
+                window.parent.refreshItemDropdown(data.id, data.name);
+            }
+        }
+    });
+});
+</script>

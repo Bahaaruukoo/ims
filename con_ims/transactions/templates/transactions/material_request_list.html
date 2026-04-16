@@ -1,0 +1,47 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">    
+    <h2 class="fw-bold">Material Requests</h2>
+
+    {% if perms.transactions.add_materialrequest %}
+        <a href="{% url 'request_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create Request
+        </a>
+    {% endif %}
+</div>
+
+<ul class="list-group shadow-sm">
+
+    {% for r in requests %}
+        <li class="list-group-item py-3">
+
+            <a href="{% url 'request_detail' r.id %}" 
+               class="d-flex justify-content-between align-items-center text-decoration-none">
+
+                <div>
+                    <strong class="d-block fs-5">{{ r.project }}</strong>
+                    <small class="text-muted">Requested by {{ r.requested_by }}</small>
+                </div>
+
+                {% if r.status == 'PENDING' %}
+                    <span class="badge bg-warning text-dark">{{ r.status }}</span>
+
+                {% elif r.status == 'APPROVED' %}
+                    <span class="badge bg-success">{{ r.status }}</span>
+
+                {% elif r.status == 'DISPATCHED' %}
+                    <span class="badge bg-secondary">COMPLETED</span>
+
+                {% elif r.status == 'REJECTED' %}
+                    <span class="badge bg-danger">{{ r.status }}</span>
+                {% endif %}
+            </a>
+
+        </li>
+    {% endfor %}
+
+</ul>
+
+{% endblock %}

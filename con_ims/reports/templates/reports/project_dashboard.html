@@ -1,0 +1,153 @@
+{% extends "utils/base.html" %}
+
+{% block full_width %}
+
+<div class="container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h3 class="fw-bold">📊 Project Material Dashboard</h3>
+        </div>
+
+        <div class="col-md-6 text-md-end">
+            <form method="get" class="d-inline-block">
+                <div class="input-group">
+                    <span class="input-group-text bg-dark text-white">
+                        Project
+                    </span>
+                    <select class="form-select" name="project" onchange="this.form.submit()">
+                        <option value="">Select Project</option>
+                        {% for p in projects %}
+                            <option value="{{ p.id }}"
+                                {% if p.id|stringformat:"s" == selected_project %}selected{% endif %}>
+                                {{ p.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NO DATA -->
+    {% if not selected_project and not charts %}
+        <div class="text-center text-muted mt-5 pt-5">
+            Please select a project to view dashboard.
+        </div>
+    {% elif not charts %}
+        <div class="alert alert-info">
+            There is no data to chart.
+        </div>
+    {% endif %}
+
+    <div>{{selected_project}}</div>
+    <!-- SITE CHARTS -->
+    <div class="row">
+
+        {% for site in charts %}
+        <div class="col-12 mb-4">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+
+                    <!-- SITE TITLE -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">
+                            📍 {{ site.site_name }}
+                        </h5>
+                    </div>
+
+                    <!-- CHART -->
+                    <div style="height: 350px;">
+                        <canvas id="chart-{{ forloop.counter }}"></canvas>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+{% for site in charts %}
+
+const labels_{{ forloop.counter }} = {{ site.labels|safe }};
+const planned_{{ forloop.counter }} = {{ site.planned|safe }};
+const consumed_{{ forloop.counter }} = {{ site.consumed|safe }};
+
+new Chart(document.getElementById('chart-{{ forloop.counter }}'), {
+    type: 'bar',
+    data: {
+        labels: labels_{{ forloop.counter }},
+        datasets: [
+            {
+                label: 'Planned',
+                data: planned_{{ forloop.counter }},
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderRadius: 6
+            },
+            {
+                label: 'Consumed',
+                data: consumed_{{ forloop.counter }},
+                backgroundColor: consumed_{{ forloop.counter }}.map((c, i) =>
+                    c > planned_{{ forloop.counter }}[i]
+                        ? 'rgba(220,53,69,0.8)'   // bootstrap danger
+                        : 'rgba(255,99,132,0.6)'
+                ),
+                borderRadius: 6
+            }
+        ]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top'
+            },
+            tooltip: {
+                callbacks: {
+                    afterBody: function(context) {
+                        const i = context[0].dataIndex;
+                        return "Remaining: " +
+                            (planned_{{ forloop.counter }}[i] - consumed_{{ forloop.counter }}[i]);
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                grid: {
+                    color: "#eee"
+                }
+            },
+            y: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+{% endfor %}
+
+});
+</script>
+
+{% endblock %}

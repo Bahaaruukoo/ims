@@ -1,0 +1,19 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+<h2>Delete Incoming Stock</h2>
+
+<p>Are you sure you want to delete this incoming stock entry?</p>
+
+<ul>
+    <li><strong>Item:</strong> {{ incoming.item_variant }}</li>
+    <li><strong>Quantity:</strong> {{ incoming.quantity }}</li>
+    <li><strong>Location:</strong> {{ incoming.location }}</li>
+</ul>
+
+<form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger">Delete</button>
+    <a href="{% url 'incoming_stock_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

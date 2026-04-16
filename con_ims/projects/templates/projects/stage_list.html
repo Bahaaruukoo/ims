@@ -1,0 +1,80 @@
+{% extends "utils/base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between" >
+    <h2 class="mb-3">Project Stages</h2>
+    <a href="{% url 'stage_create' %}" class="btn btn-primary mb-3">Add Stage</a>
+</div>
+<form method="get" class="row g-2 mb-3">
+
+    <div class="col-md-4">
+        <select name="project" class="form-select">
+            <option value=""class="ms-5"> Select Project</option>
+            {% for p in projects %}
+                <option value="{{ p.id }}" {% if request.GET.project == p.id|stringformat:"s" %}selected{% endif %}>
+                    {{ p.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="">All Status</option>
+            <option value="PLANNING"  {% if request.GET.status == "PLANNING" %}selected{% endif %}>Planning</option>
+            <option value="ACTIVE"   {% if request.GET.status == "ACTIVE" %}selected{% endif %}>Active</option>
+            <option value="COMPLETED"     {% if request.GET.status == "COMPLETED" %}selected{% endif %}>Completed</option>
+            <option value="ON_HOLD"     {% if request.GET.status == "ON_HOLD" %}selected{% endif %}>On Hold</option>
+            <option value="CANCELED"     {% if request.GET.status == "CANCELED" %}selected{% endif %}>Canceled</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100">Filter</button>
+    </div>
+
+    <div class="col-md-2">
+        <a href="{% url 'stage_list' %}" class="btn btn-secondary w-100">Reset</a>
+    </div>
+
+</form>
+
+{% if stages %}
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Project</th>
+            <th>Site</th>
+            <th>Name</th>
+            <th>Order</th>
+            <th>Status</th>
+            <th>Start</th>
+            <th>End</th>
+            <th width="150">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for st in stages %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ st.project.name }}</td>
+            <td>{% if st.site %}{{ st.site.name }}{% else %}—{% endif %}</td>
+            <td>{{ st.name }}</td>
+            <td>{{ st.order }}</td>
+            <td>{{ st.status }}</td>
+            <td>{{ st.start_date|default:"—" }}</td>
+            <td>{{ st.end_date|default:"—" }}</td>
+            <td>
+                <a href="{% url 'stage_update' st.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'stage_delete' st.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endif %}
+
+{% endblock %}

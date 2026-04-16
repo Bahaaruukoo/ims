@@ -1,0 +1,11 @@
+<h2>Material Requests</h2>
+
+<ul>
+{% for r in requests %}
+    <li>
+        <a href="{% url 'store_request_detail' r.id %}">
+            {{ r.project }} - {{ r.site }} - {{ r.status }}
+        </a>
+    </li>
+{% endfor %}
+</ul>

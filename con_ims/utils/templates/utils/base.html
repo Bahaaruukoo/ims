@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Construction IMS</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f6fa;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+            color: #ffc107 !important;
+        }
+
+        /* Mobile bottom nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #212529;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+        }
+
+        .bottom-nav a {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .bottom-nav i {
+            display: block;
+            font-size: 18px;
+        }
+
+        @media (min-width: 768px) {
+            .bottom-nav {
+                display: none;
+            }
+        }
+
+        /* Prevent content hiding behind bottom nav */
+        .content-wrapper {
+            padding-bottom: 70px;
+        }
+        .nav-badge {
+            position: relative;
+            top: -3px;      /* lift the badge */
+            margin-left: 6px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- 🔝 NAVBAR -->
+<nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="/">IMS</a>
+
+        <!-- Mobile toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- MENU -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <ul class="navbar-nav ms-auto">
+
+                {% if perms.projects.add_project %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'project_list' %}">
+                            <i class="bi bi-building"></i> Projects
+                        </a>
+                    </li>
+                {% endif %}
+                {% if perms.projects.add_site %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'site_list' %}">
+                            <i class="bi bi-geo-alt"></i> Sites
+                        </a>
+                    </li>
+                {% endif %}
+                {% if perms.projects.add_projectstage %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stage_list' %}">
+                            <i class="bi bi-hourglass-split"></i> Stages
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if perms.inventory.add_item %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'item_list' %}">
+                            <i class="bi bi-box"></i> Items
+                        </a>
+                    </li>
+                {% endif %}
+
+
+                {% if perms.inventory.add_itemvariant %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'variant_list' %}">
+                            Variants
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if perms.inventory.add_location %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'location_list' %}">
+                            <i class="bi bi-grid-3x3-gap"></i> Warehouses
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if perms.inventory.add_stock %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stock_list' %}">
+                            <i class="bi bi-graph-up"></i> Stock
+                        </a>
+                    </li>
+                {% endif %}
+                {% if perms.transactions.view_materialrequest or perms.transactions.approve_materialrequest %}
+                    <li class="nav-item">
+                        <a class="nav-link d-flex justify-content-between align-items-center"
+                        href="{% url 'request_list' %}">
+                            <span>
+                                <i class="bi bi-envelope-plus"></i> Requests
+                            </span>
+
+                            <span 
+                                hx-get="{% url 'pending_request_count_partial' %}"
+                                hx-trigger="load, every 5s"
+                                hx-target="this"
+                                hx-swap="outerHTML"
+                            ></span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            <!-- USER DROPDOWN -->
+            <div class="dropdown ms-3">
+                <button class="btn btn-outline-light btn-sm dropdown-toggle"
+                        data-bs-toggle="dropdown">
+                    {{ request.user.email }}
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li class="dropdown-header">
+                        {{ request.tenant.name }}
+                    </li>
+
+                    {% if perms.transactions.view_inventorytransaction %}
+                        <li><a class="dropdown-item" href="{% url 'incoming_stock_list' %}">
+                            <i class="bi bi-download "></i> Received materials 
+                        </a></li>
+                    {% endif %}
+                    {% if perms.transactions.view_incomingstock %}
+                        <li><a class="dropdown-item" href="{% url 'transaction_list' %}">
+                            <i class="bi bi-arrow-left-right "></i> Consumed materials
+                        </a></li>
+                    {% endif %}
+                    {% if perms.transactions.view_inventorytransaction %}
+                        <li><a class="dropdown-item" href="{% url 'consumption_chart' %}">
+                            <i class="bi bi-arrow-left-right "></i> Consumption Balance
+                        </a></li>
+                    {% endif %}
+
+                    <li><a class="dropdown-item" href="{% url 'account_dashboard' %}">
+                        <i class="bi bi-person"></i> Account
+                    </a></li>
+
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">
+                        <i class="bi bi-person-badge"></i> Profile
+                    </a></li>
+
+                    <li><hr class="dropdown-divider"></li>
+
+                    <li><a class="dropdown-item text-danger" href="{% url 'account_logout' %}">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</nav>
+
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+<!-- 📦 CONTENT -->
+<div class="container-fluid px-0" >
+
+    {% block full_width %}
+
+    {% endblock %}
+
+</div>
+    
+<div class="container mt-3" id="content_container">
+
+    {% block content %}
+    {% endblock %}
+
+
+</div>
+
+<!-- 📱 MOBILE BOTTOM NAV 
+
+
+<div class="bottom-nav">
+    <a href="/">
+        <i class="bi bi-house"></i>
+        Home
+    </a>
+    <a href="{% url 'project_list' %}">
+        <i class="bi bi-building"></i>
+        Projects
+    </a>
+    <a href="{% url 'stock_list' %}">
+        <i class="bi bi-box-seam"></i>
+        Stock
+    </a>
+    <a href="{% url 'transaction_list' %}">
+        <i class="bi bi-arrow-left-right"></i>
+        Txns
+    </a>
+</div> -->
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
